@@ -22,6 +22,12 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * Name: login
+     * Description: 登陆
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:15
+    */
     public ServerResponse<User> login(String userName, String password) {
         int resultCount = userMapper.checkUserName(userName);
         if(resultCount == 0) {
@@ -36,13 +42,21 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess("登陆成功", user);
     }
 
-    public ServerResponse<User> register(User user) {
-        int resultCount = userMapper.checkUserName(user.getUsername());
-        if(resultCount > 0) {
-            return ServerResponse.createByErrorMessage("用户名存在");
+    /**
+     * Name: register
+     * Description: 注册
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:15
+    */
+    public ServerResponse<String> register(User user) {
+
+        ServerResponse response = this.checkValue(user.getUsername(), Const.USER_NAME);
+        if(!response.isSuccess()) {
+            return ServerResponse.createByErrorMessage("用户名已存在");
         }
-        resultCount = userMapper.checkEmail(user.getEmail());
-        if(resultCount > 0) {
+
+        response = this.checkValue(user.getEmail(), Const.EMAIL);
+        if(!response.isSuccess()) {
             return ServerResponse.createByErrorMessage("邮箱已存在");
         }
         // 设置权限
@@ -52,12 +66,51 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
 
         // 保存
-        resultCount = userMapper.insert(user);
+        int resultCount = userMapper.insert(user);
         if(resultCount == 0) {
             return ServerResponse.createByErrorMessage("注册失败");
         }
         return ServerResponse.createBySuccessMessage("注册成功");
     }
 
+    /**
+     * Name: checkValue
+     * Description: 检查用户名和email是否有效
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:20
+    */
+    public ServerResponse<String> checkValue(String str, String type) {
+        if(StringUtils.isNotBlank(type)) {
+            if(type.equals(Const.USER_NAME)) {
+                int resultCount = userMapper.checkUserName(str);
+                if(resultCount > 0) {
+                    return ServerResponse.createByErrorMessage("用户名已存在");
+                }
+            }
+            if(type.equals(Const.EMAIL)) {
+                int resultCount = userMapper.checkEmail(str);
+                if(resultCount > 0) {
+                    return ServerResponse.createByErrorMessage("邮箱已存在");
+                }
+            }
+        }
+        else {
+            ServerResponse.createByErrorMessage("参数错误");
+        }
+        return ServerResponse.createBySuccess();
+    }
+    
+    /**
+     * Name: getPasswordPrompt
+     * Description: 获取密码提示问题
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:49
+    */
+    public ServerResponse<String> getPasswordPrompt(String userName) {
+        ServerResponse response = this.checkValue(userName, Const.USER_NAME);
+        if(response.isSuccess()) {
 
+        }
+        return null;
+    }
 }

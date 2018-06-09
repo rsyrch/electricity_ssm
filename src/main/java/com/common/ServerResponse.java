@@ -38,6 +38,9 @@ public class ServerResponse<T> implements Serializable {
         this.message = message;
     }
 
+    private ServerResponse(String message) {
+        this.message = message;
+    }
     @JsonIgnore
     // 不在json序列化结构当中
     public boolean isSuccess() {

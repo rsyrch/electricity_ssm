@@ -13,4 +13,8 @@ public class Const {
         int ROLE_CUSTOMER = 0;  // 普通用户
         int ROLE_ADMIN = 1; // 管理员
     }
+
+    public static final String EMAIL = "email";
+
+    public static  final String USER_NAME = "userName";
 }

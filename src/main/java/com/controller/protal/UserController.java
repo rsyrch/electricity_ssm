@@ -64,8 +64,48 @@ public class UserController {
     */
     @RequestMapping(value = "userRegister.do")
     @ResponseBody
-    public ServerResponse<User> userRegister(User user) {
+    public ServerResponse<String> userRegister(User user) {
         return iUserService.register(user);
+    }
+
+    /**
+     * Name: checkValue
+     * Description: 检查用户名和Email是否有效
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 0:53
+    */
+    @RequestMapping(value = "checkValue.do")
+    @ResponseBody
+    public ServerResponse<String> checkValue(String str, String type) {
+        return iUserService.checkValue(str, type);
+    }
+
+    /**
+     * Name: getUserInfo
+     * Description: 获取用户信息
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:26
+    */
+    @RequestMapping(value = "getUserInfo.do")
+    @ResponseBody
+    public ServerResponse<User> getUserInfo(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取信息");
+        }
+        return ServerResponse.createBySuccess(user);
+    }
+
+    /**
+     * Name: getPasswordPrompt
+     * Description: 获取密码提示
+     * Author: luo chuan
+     * CreateDate: 2018/6/10 1:43
+    */
+    @RequestMapping(value = "getPasswordPrompt.do")
+    @ResponseBody
+    public ServerResponse<String> getPasswordPrompt() {
+        return null;
     }
 
 }
