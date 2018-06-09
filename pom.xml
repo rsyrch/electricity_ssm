@@ -179,6 +179,7 @@
       <version>2.0.1</version>
     </dependency>
 
+    <!-- Mybatis分页 -->
     <dependency>
       <groupId>com.github.pagehelper</groupId>
       <artifactId>pagehelper</artifactId>
@@ -196,6 +197,8 @@
       <artifactId>jsqlparser</artifactId>
       <version>0.9.4</version>
     </dependency>
+
+
 
     <dependency>
       <groupId>commons-codec</groupId>
@@ -262,7 +265,7 @@
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
+
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
