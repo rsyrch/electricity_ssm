@@ -109,7 +109,19 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> getPasswordPrompt(String userName) {
         ServerResponse response = this.checkValue(userName, Const.USER_NAME);
         if(response.isSuccess()) {
+            return ServerResponse.createByErrorMessage("用户不存在");
+        }
+        String passwordQuestion = userMapper.getPasswordQuestion(userName);
+        if(StringUtils.isNotBlank(passwordQuestion)) {
+            return ServerResponse.createBySuccess(passwordQuestion);
+        }
+        return ServerResponse.createByErrorMessage("修改密码问题为空");
+    }
 
+    public ServerResponse<String> checkQuestion(String userName, String question, String answer) {
+        ServerResponse response = this.checkValue(userName, Const.USER_NAME);
+        if(response.isSuccess()) {
+            return ServerResponse.createByErrorMessage("用户不存在");
         }
         return null;
     }

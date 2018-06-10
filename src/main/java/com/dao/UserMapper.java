@@ -24,4 +24,7 @@ public interface UserMapper {
 
     // 检查邮箱
     int checkEmail(String email);
+
+    // 获取修改密码问题
+    String getPasswordQuestion(String userName);
 }

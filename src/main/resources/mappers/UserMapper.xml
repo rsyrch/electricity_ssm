@@ -169,4 +169,9 @@
     where email = #{email}
   </select>
 
+  <select id="getPasswordQuestion" resultType="String" parameterType="String">
+    select question from mmall_user
+    where username = #{userName}
+  </select>
+
 </mapper>

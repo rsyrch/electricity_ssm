@@ -11,4 +11,6 @@ public interface IUserService {
      ServerResponse<String> checkValue(String str, String type);
 
      ServerResponse<String> getPasswordPrompt(String userName);
+
+     ServerResponse<String> checkQuestion(String userName, String question, String answer);
 }

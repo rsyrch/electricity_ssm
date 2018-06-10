@@ -104,8 +104,12 @@ public class UserController {
     */
     @RequestMapping(value = "getPasswordPrompt.do")
     @ResponseBody
-    public ServerResponse<String> getPasswordPrompt() {
-        return null;
+    public ServerResponse<String> getPasswordPrompt(String userName) {
+        return iUserService.getPasswordPrompt(userName);
+    }
+
+    public ServerResponse<String> checkQuestion(String userName, String question, String answer) {
+        return iUserService.checkQuestion(userName, question, answer);
     }
 
 }
