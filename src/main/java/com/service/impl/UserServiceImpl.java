@@ -228,4 +228,17 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
     }
+    
+    /**
+     * Name: checkUserIsAdmin
+     * Description: 检查用户是否是管理员
+     * Author: luo chuan
+     * CreateDate: 2018/6/12 21:01
+    */
+    public ServerResponse<String> checkUserIsAdmin(User user) {
+        if(user != null && user.getRole().intValue() == Const.Roel.ROLE_ADMIN) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
 }

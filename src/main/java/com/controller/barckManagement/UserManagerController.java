@@ -1,4 +1,4 @@
-package com.controller.barckuser;
+package com.controller.barckManagement;
 
 import com.common.Const;
 import com.common.ServerResponse;
