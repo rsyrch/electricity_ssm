@@ -1,6 +1,9 @@
 package com.service;
 
 import com.common.ServerResponse;
+import com.pojo.Category;
+
+import java.util.List;
 
 /**
  * @FunctionName:
@@ -12,4 +15,8 @@ public interface ICategoryService {
     ServerResponse addCategory(String categoryName, Integer parentId);
 
     ServerResponse editCategoryName(Integer categoryId, String categoryName);
+
+    ServerResponse<List<Category>> getChildrenParalleCategory(Integer parentId);
+
+    ServerResponse selectCategoryAndChildrenById(Integer categoreyId);
 }

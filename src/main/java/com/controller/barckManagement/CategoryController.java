@@ -78,5 +78,51 @@ public class CategoryController {
             return ServerResponse.createByErrorMessage("非管理员,无权限操作");
         }
     }
+    
+    /**
+     * Description: 根据id查询下级的所有分类的信息
+     * CreateDate: 2018/6/13 15:40
+     * 
+    */
+    @RequestMapping(value = "getChildrenParalleCategoryById.do")
+    @ResponseBody
+    public ServerResponse getChildrenParalleCategoryById(HttpSession session, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorMessage("用户未登录");
+        }
+        // 检验是否为管理员
+        ServerResponse response = iUserService.checkUserIsAdmin(user);
+        if(response.isSuccess()) {
+            // 查询分类
+            return iCategoryService.getChildrenParalleCategory(parentId);
+        }
+        else {
+            return ServerResponse.createByErrorMessage("非管理员,无权限操作");
+        }
+    }
+
+    /**
+     * Description: 查询当前节点和所有子节点的分类信息
+     * CreateDate: 2018/6/13 20:27
+     * 
+    */
+    public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorMessage("用户未登录");
+        }
+        // 检验是否为管理员
+        ServerResponse response = iUserService.checkUserIsAdmin(user);
+        if(response.isSuccess()) {
+            // 递归查询当前节点和子节点的分类信息
+            // 子节点个数不定，递归查询
+            return iCategoryService.selectCategoryAndChildrenById(parentId);
+        }
+        else {
+            return ServerResponse.createByErrorMessage("非管理员,无权限操作");
+        }
+
+    }
 
 }
