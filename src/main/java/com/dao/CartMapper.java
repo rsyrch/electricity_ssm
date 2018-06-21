@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.pojo.Cart;
+import org.apache.ibatis.annotations.Param;
 
 public interface CartMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,6 @@ public interface CartMapper {
     int updateByPrimaryKeySelective(Cart record);
 
     int updateByPrimaryKey(Cart record);
+
+    Cart selectByUserIdAndProductId(@Param(value = "userId") Integer userId, @Param(value = "productId") Integer productId);
 }

@@ -8,16 +8,13 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * Created by geely
- */
+ * Description: 时间处理工具
+ * CreateDate: 2018/6/16 11:12
+ * 
+*/
 public class DateTimeUtil {
 
-    //joda-time
-
-    //str->Date
-    //Date->str
     public static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
 
 
     public static Date strToDate(String dateTimeStr,String formatStr){
