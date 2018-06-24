@@ -55,4 +55,75 @@ public class Const {
             return code;
         }
     }
+
+    // 订单状态
+    public enum OrderStatus {
+        CANCLE(0, "已取消"),
+        NO_PAY(10, "未支付"),
+        YES_PAY(20, "已支付"),
+        YES_DELIVERY(40, "已发货"),
+        ORDER_SUCCESS(50, "订单完成"),
+        ORDER_CLOSE(60, "订单关闭");
+
+
+        private int code;
+        private String value;
+
+        OrderStatus(int code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    // 支付宝回调返回状态
+    public interface AlipayCallbackStatus{
+        // 交易创建，等待买家付款
+        String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+
+        // 未付款交易超时关闭，或支付完成后全额退款
+        String TRADE_CLOSED = "TRADE_CLOSED";
+
+        // 交易支付成功
+        String TRADE_SUCCESS = "TRADE_SUCCESS";
+
+        // 交易结束，不可退款
+        String TRADE_FINISHED = "TRADE_FINISHED";
+
+        // 返回给支付宝,停止回调
+        String RESPONSE_SUCCESS = "success";
+
+        // 支付失败
+        String RESPONSE_FAILED = "failed";
+    }
+
+    // 支付类型
+    public enum payPlatFrom {
+
+        ALIPAY(1, "支付宝"),
+        WXPAY(2, "微信");
+
+        private int code;
+        private String value;
+
+        payPlatFrom(int code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

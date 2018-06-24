@@ -205,4 +205,9 @@
     from mmall_order
     where user_id = #{userId} and order_no = #{orderNumber}
   </select>
+
+  <select id="selectByOrdeNumber" parameterType="Long" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from mmall_order where order_no = #{orderNumber}
+  </select>
 </mapper>

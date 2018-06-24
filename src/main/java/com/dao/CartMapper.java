@@ -27,4 +27,7 @@ public interface CartMapper {
 
     // 删除购物车中的产品
     int deleteProductByUserIdProductId(@Param(value = "userId") Integer userId, @Param(value = "productId") Integer productId);
+
+    // 用户选中的产品
+    List<Cart> selectCheckedCartByUserId(Integer userId);
 }

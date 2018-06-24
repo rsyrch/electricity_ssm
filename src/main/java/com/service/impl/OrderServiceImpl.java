@@ -9,17 +9,18 @@ import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.common.Const;
 import com.common.ServerResponse;
-import com.dao.OrderItemMapper;
-import com.dao.OrderMapper;
+import com.dao.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.pojo.Order;
-import com.pojo.OrderItem;
+import com.pojo.*;
 import com.service.IOrderService;
 import com.util.BigDecimalUtil;
+import com.util.DateTimeUtil;
 import com.util.FTPUtil;
 import com.util.PropertiesUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,15 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private PayInfoMapper payInfoMapper;
+
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -177,4 +188,115 @@ public class OrderServiceImpl implements IOrderService {
             logger.info("body:" + response.getBody());
         }
     }
+
+    /**
+     * Description: 支付宝回调验证
+     * CreateDate: 2018/6/24 13:03
+     *
+    */
+    public ServerResponse alipayCallback(Map<String, String> params) {
+        Long orderNumber = Long.parseLong(params.get("out_trade_no"));
+        // 支付宝交易号
+        String tradeNumber = params.get("trade_no");
+        // 交易目前所处的状态
+        String tradeStatus = params.get("trade_status");
+
+        Order order = orderMapper.selectByOrdeNumber(orderNumber);
+        if(order == null) {
+            ServerResponse.createByErrorMessage("订单不存在");
+        }
+        if(order.getStatus() >= Const.OrderStatus.YES_PAY.getCode()) {
+            return ServerResponse.createBySuccess("重复调用");
+        }
+        if(tradeStatus.equals(Const.AlipayCallbackStatus.TRADE_SUCCESS)) {
+            // 交易成功,修改订单状态
+            order.setStatus(Const.OrderStatus.YES_PAY.getCode());
+            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
+
+        // 交易记录保存
+        PayInfo payInfo = new PayInfo();
+        payInfo.setUserId(order.getUserId());
+        payInfo.setOrderNo(order.getOrderNo());
+        payInfo.setPayPlatform(Const.payPlatFrom.ALIPAY.getCode());
+        payInfo.setPlatformStatus(tradeStatus);
+        payInfoMapper.insert(payInfo);
+        return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * Description: 查询订单状态
+     * CreateDate: 2018/6/24 16:00
+     *
+    */
+    public ServerResponse queryOrderStatus(Long orderNumber, Integer userId) {
+        Order order = orderMapper.selectOrderByUserIdAndOrderNumber(userId, orderNumber);
+        if(order == null) {
+            return ServerResponse.createByErrorMessage("订单不存在");
+        }
+        if(order.getStatus() >= Const.OrderStatus.YES_PAY.getCode()) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
+
+    /**
+     * Description: 保存订单
+     * CreateDate: 2018/6/25 0:05
+     *
+    */
+    public ServerResponse addOrder(Integer userId) {
+        List<Cart> cartList = cartMapper.selectByUserId(userId);
+        ServerResponse serverResponse = this.getCartOrderItem(userId, cartList);
+        if(!serverResponse.isSuccess()) {
+            return serverResponse;
+        }
+        List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
+        // 计算订单总价
+        BigDecimal orderPrice = new BigDecimal("0");
+        for(OrderItem orderItem : orderItemList) {
+            BigDecimalUtil.add(orderItem.getTotalPrice().doubleValue(), orderPrice.doubleValue());
+        }
+
+        // 生成订单
+        Order order = new Order();
+
+        return null;
+    }
+    
+    /**
+     * Description: 根据购物车生成订单明细数据
+     * CreateDate: 2018/6/25 0:09
+     * 
+    */
+    private ServerResponse getCartOrderItem(Integer userId, List<Cart> cartList) {
+        List<OrderItem> orderItemList = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(cartList)) {
+            return ServerResponse.createByErrorMessage("无结算产品");
+        }
+        for(Cart cart : cartList) {
+            OrderItem orderItem = new OrderItem();
+            Product product = productMapper.selectByPrimaryKey(cart.getProductId());
+            // 判断产品状态
+            if(Const.ProductStatus.ON_SALE.getCode() != product.getStatus()) {
+                return ServerResponse.createByErrorMessage("产品: " + product.getName() + "已经下线, 不再出售");
+            }
+            // 校验库存
+            if(cart.getQuantity() > product.getStock()) {
+                return ServerResponse.createByErrorMessage("产品: " + product.getName() + "库存不足");
+            }
+
+            orderItem.setUserId(userId);
+            orderItem.setProductId(product.getId());
+            orderItem.setProductName(product.getName());
+            orderItem.setProductImage(product.getMainImage());
+            orderItem.setCurrentUnitPrice(product.getPrice());
+            orderItem.setQuantity(cart.getQuantity());
+            orderItem.setTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cart.getQuantity()));
+            orderItemList.add(orderItem);
+        }
+        return ServerResponse.createBySuccess(orderItemList);
+    }
+
 }
