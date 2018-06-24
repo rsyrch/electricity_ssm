@@ -28,6 +28,8 @@ public class Const {
     public interface Catr{
         int CHECKED = 1;    // 产品选中状态
         int NO_CHECKED = 0; // 产未选中状态
+        String LIMIT_NUMBER_FAIL = "LIMIT_NUMBER_FAIL"; // 限制失败
+        String LIMIT_NUMBER_SUCCESS = "LIMIT_NUMBER_SUCCESS"; // 限制成功
     }
 
     public static final String EMAIL = "email";

@@ -96,7 +96,6 @@
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>1.4</version>
-      <!--<scope>runtime</scope>-->
     </dependency>
 
 
@@ -144,7 +143,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <!--<scope>test</scope>-->
     </dependency>
 
     <dependency>
@@ -199,7 +197,7 @@
     </dependency>
 
 
-
+    <!-- alipay支付宝支付 -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>

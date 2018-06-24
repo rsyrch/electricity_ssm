@@ -125,4 +125,22 @@
     from mmall_cart
     where user_id = #{userId} and product_id = #{productId}
   </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Integer">
+    select
+    <include refid="Base_Column_List"></include>
+    from mmall_catr
+    where user_id = #{userId}
+  </select>
+
+  <select id="selectCartProductCheckedStatusByUserId" resultType="Integer" parameterType="Integer">
+    select count(1)
+    from mmall_catr
+    where checked = 0 and user_id = #{userId}
+  </select>
+
+  <delete id="deleteProductByUserIdProductId" parameterType="map">
+    delete from mmall_cart
+    where user_id = #{userId} and productId = #{productId}
+  </delete>
 </mapper>

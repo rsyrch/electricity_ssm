@@ -209,7 +209,7 @@
     </if>
     <if test="categoryIdList != null">
       and category_id in
-      <foreach item="productId" index="" open="(" separator="," close=")" collection="categoryIdList">
+      <foreach item="productId" index="index" open="(" separator="," close=")" collection="categoryIdList">
         #{productId}
       </foreach>
     </if>
