@@ -118,9 +118,30 @@ public class OrderController {
 
     }
 
+    /**
+     * Description: 下单
+     * CreateDate: 2018/6/25 23:06
+     *
+    */
     @RequestMapping(value = "addOrder.do")
     @ResponseBody
-    public ServerResponse addOrder(HttpSession session) {
+    public ServerResponse addOrder(HttpSession session, Integer addressId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
+
+        }
+        return iOrderService.addOrder(user.getId(), addressId);
+    }
+    
+    /**
+     * Description: 未付款取消订单
+     * CreateDate: 2018/6/25 23:09
+     * 
+    */
+    @RequestMapping(value = "cancleOrder")
+    @ResponseBody
+    public ServerResponse cancleOrder(HttpSession session, Long orderNumber) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if(user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());

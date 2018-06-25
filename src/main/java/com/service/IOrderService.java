@@ -14,4 +14,6 @@ public interface IOrderService {
     ServerResponse alipayCallback(Map<String, String> params);
 
     ServerResponse queryOrderStatus(Long orderNumber, Integer userId);
+
+    ServerResponse addOrder(Integer userId, Integer addressId);
 }

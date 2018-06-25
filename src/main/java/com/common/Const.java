@@ -32,8 +32,10 @@ public class Const {
         String LIMIT_NUMBER_SUCCESS = "LIMIT_NUMBER_SUCCESS"; // 限制成功
     }
 
+    // 邮箱
     public static final String EMAIL = "email";
 
+    // 用户姓名
     public static  final String USER_NAME = "userName";
 
 
@@ -81,6 +83,15 @@ public class Const {
         public String getValue() {
             return value;
         }
+
+        public static OrderStatus codeOf(int code) {
+            for(OrderStatus orderStatus : values()) {
+                if(orderStatus.getCode() == code) {
+                    return orderStatus;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
+        }
     }
 
     // 支付宝回调返回状态
@@ -124,6 +135,37 @@ public class Const {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    // 订单支付类型
+    public enum paymentType {
+
+        ONLINE_PAY(1, "在线支付");
+
+        private int code;
+        private String value;
+
+        paymentType(int code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static paymentType codeOf(int code) {
+            for(paymentType paymentType : values()) {
+                if(paymentType.getCode() == code) {
+                    return paymentType;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
         }
     }
 }
